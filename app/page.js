@@ -43,13 +43,15 @@ export default function Home() {
   const submitQuery = async () => {
     let query = document.getElementById("inputdiv").textContent;
     setMessages((messages) => [...messages, { text: query, type: "user" }]);
-    let result = await model.generateContent(`Simplify & also write the meaning of the verse in simple words: ${query}`);
-    let response = await result.response;
-    response = response.text();
-    response = response.replace("*", "");
-    setMessages((messages) => [...messages, { text: response, type: "bot" }]);
     document.getElementById("inputdiv").textContent = "";
     document.getElementById("placeholder-dummy").classList.remove("opacity-0");
+    let result = await model.generateContent(
+      `Explain the meaning of the following verse in simple, easy-to-understand language. Provide only the simplified meaning without any markdown or extra formatting minimum 150 words: ${query}`
+    );
+    let response = await result.response;
+    response = response.text().toString();
+    response = response.replace(/\*{1,2}/g, "");
+    setMessages((messages) => [...messages, { text: response, type: "bot" }]);
   };
 
   return (
@@ -78,7 +80,7 @@ export default function Home() {
             <p className="text-sm text-center">Bridging faith and understanding.</p>
           </div>
         </div>
-        <div className="h-auto min-h-svh space-y-2 pt-2 pb-2 px-2">
+        <div className="h-auto min-h-svh space-y-4 pt-4 pb-4 px-4">
           {messages.map((message, index) => {
             return (
               <div className="flex" key={index}>
